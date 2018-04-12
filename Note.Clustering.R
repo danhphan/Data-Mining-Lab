@@ -4,7 +4,7 @@
 
 
 
-##### HIARARCHICAL CLUSTERING ######
+##### HIERARCHY CLUSTERING ######
 
 # Create a random matrix
 
