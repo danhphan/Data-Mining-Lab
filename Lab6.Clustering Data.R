@@ -25,7 +25,7 @@ cancer <- cancer[,c(1:101)]
 # 2. HIERARCHICAL CLUSTERING
 
 # install the Hmisc package
-install.packages("Hmisc")
+# install.packages("Hmisc")
 
 # add the Hmisc package
 library(Hmisc)
