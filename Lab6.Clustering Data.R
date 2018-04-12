@@ -67,8 +67,12 @@ cancer$hc2 <- as.factor(hccut2)
 
 # (iii) standardise variables
 cancerS <- scale(cancer[,c(2:101)])
+
 # add cancer types back to scaled data
 cancerS <- cbind(cancer[,1], cancerS)
+summary(cancerS)
+help(cbind)
+help(scale)
 # re-run for scaled variables
 d3 = dist(cancerS[,c(2:101)], method = "euclidean")
 hc3 <- hclust(d3, method = "ward.D2")
@@ -77,9 +81,24 @@ plot(hc3,
      main = "ward.D2 Method",
      xlab = "", ylab = "", sub = "Normalised Variables",
      cex = 0.4)
-rect.hclust(hc3, k=3)
+rect.hclust(hc3,k=3)
+cancer$hc2 <- cutree(hc3,k=3)
 
+# Show two dendrograms on a plot
+par(mfrow = c(1,2))
+plot(hc2,
+     labels = cancer$CancerType,
+     main = "ward.D2 Method",
+     xlab = "", ylab = "", sub = "",
+     cex = 0.4)
+plot(hc3,
+     labels = cancer$CancerType,
+     main = "ward.D2 Method",
+     xlab = "", ylab = "", sub = "Normalised Variables",
+     cex = 0.4)
+par(mfrow=c(1,1))
 # (iv) check to see if cancer types fall into meaninful clusters
+help(table)
 table(cancer$CancerType, cancer$hc1)
 table(cancer$CancerType, cancer$hc2)
 
@@ -89,19 +108,24 @@ table(cancer$hc1, cancer$hc2)
 
 cancer$hc1 <- paste("hc1", cancer$hc1)
 cancer$hc2 <- paste("hc2", cancer$hc2)
+table(cancer$hc1, cancer$hc2)
 
 # 3. K MEANS CLUSTERING
 
 # set random seed so you can get the same results
-# set.seed(123)
+set.seed(123)
 
-# k means solutions for 2, 3 & 4 solutions
+# k means solutions for 2, 3 & 4 clusters
 # nstart does random start points n times and the best solution is chosen
 # default value for nstart is 1
+help(kmeans)
 kc2 <- kmeans(cancer[,c(2:101)], centers = 2, nstart = 25)
 kc3 <- kmeans(cancer[,c(2:101)], centers = 3, nstart = 25)
 kc4 <- kmeans(cancer[,c(2:101)], centers = 4, nstart = 25)
-
+kc2
+kc2$withinss
+kc4$cluster
+summary(kc2)
 # get help on kmeans
 help(kmeans)
 
@@ -118,14 +142,13 @@ plot(1:6, wss,
      xlab="Number of clusters K",
      ylab="Total within-clusters sum of squares")
 
-KC
-
 # add kmeans cluster solutions to the dataset 
 cancer$kc2 <- as.factor(kc2$cluster)
 cancer$kc3 <- as.factor(kc3$cluster)
 cancer$kc4 <- as.factor(kc4$cluster)
 
 # check to see if cancer types fall into meaningful clusters
+table(cancer$CancerType,cancer$kc3)
 table(cancer$CancerType, cancer$kc2)
 table(cancer$CancerType, cancer$kc3)
 table(cancer$CancerType, cancer$kc4)
@@ -137,6 +160,11 @@ table(cancer$CancerType, cancer$kc4)
 # for example ... 
 table(cancer$kc3, cancer$hc2)
 table(cancer$kc2, cancer$hc2)
+cancer$kc3 <- paste("",cancer$kc3)
+cancer$kc3 
+help(paste)
+table(cancer$kc3,cancer$hc2)
+
 
 # centres gives means of each variable for each cluster
 kc2$centers
