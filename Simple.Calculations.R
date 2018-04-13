@@ -63,6 +63,10 @@ vec2.a <- vec2[!is.na(vec2)] # Remove missing values
 vec2.a
 vec2[c(TRUE,TRUE,FALSE,FALSE)] # Get "a" and "b"
 
+##### DATA FRAME ######
+
+
+
 ##### MATRIX ######
 
 # Create a random matrix
