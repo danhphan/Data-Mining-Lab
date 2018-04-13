@@ -62,6 +62,12 @@ is.na(vec2)
 vec2.a <- vec2[!is.na(vec2)] # Remove missing values
 vec2.a
 vec2[c(TRUE,TRUE,FALSE,FALSE)] # Get "a" and "b"
+#Sampleing
+set.seed(100)  # optional. set it to get same random samples.
+sample(vec1)  # sample all elements randomly
+sample(vec1, 3)  # sample 3 elem without replacement
+sample(vec1, 10, replace=T)  # sample with replacement
+
 
 ##### DATA FRAME ######
 
