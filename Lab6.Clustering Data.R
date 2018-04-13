@@ -175,13 +175,20 @@ kc4$centers
 plot(kc2$centers[1,c(1:100)], type = "o", col = "red")
 lines(kc2$centers[2,c(1:100)], type = "o", col = "blue")
 
+plot(kc4$centers[1,c(1:100)], type="o",col="1")
+lines(kc4$centers[2,c(1:100)], type="o",col="2")
+lines(kc4$centers[3,c(1:100)], type="o",col="3")
+lines(kc4$centers[4,c(1:100)], type="o",col="4")
+
 # 2-dimensional charts by cluster
-pairs(cancer[,c(1:5)], col = c(1:2)[kc2$cluster])
+pairs(cancer[,c(2:6)], col = c(1:2)[kc2$cluster])
 pairs(cancer[,c(41:45)], col = c(1:2)[kc2$cluster])
 plot(cancer$Gene44, cancer$Gene45, col = c(1:2)[kc2$cluster])
 library(ggplot2)
 ggplot(cancer, aes(Gene44, Gene45, color = kc2, shape = kc2)) + geom_point()
+ggplot(cancer, aes(Gene1,Gene2,color=kc4, shape=kc4)) + geom_point()
 
+# UPDATE
 
 # 2-dimensional pplot of clusters using first 2 principal components
 install.packages("cluster")
@@ -193,3 +200,14 @@ clusplot(cancer[,c(2:101)],
          labels = 4,
          lines = 0,
          main = "Clusters of the Cancer Dataset")
+# K =3
+clusplot(cancer[,c(2:101)],cancer$kc3, color=T,shade = F,labels=3, main = "K-Means cluster for k=3")
+
+# K = 4
+clusplot(cancer[,c(2:101)],cancer$kc4, color=T,shade = F,labels=4, main = "K-Means cluster for k=4")
+
+# Compare 3 Clusters between K-means and Hierarchy cluster
+par(mfrow=c(1,2))
+clusplot(cancer[,c(2:101)],cancer$kc3, color=T,shade = F,labels=3, main = "K-Means cluster for k=3")
+clusplot(cancer[,c(2:101)],cancer$hc2, color=T,shade=F,labels=3, main = "Hierarchy with 3 clusters")
+
