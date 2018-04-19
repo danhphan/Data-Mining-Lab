@@ -67,7 +67,7 @@ set.seed(100)  # optional. set it to get same random samples.
 sample(vec1)  # sample all elements randomly
 sample(vec1, 3)  # sample 3 elem without replacement
 sample(vec1, 10, replace=T)  # sample with replacement
-
+help(sample)
 
 ##### DATA FRAME ######
 
