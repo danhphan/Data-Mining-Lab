@@ -83,14 +83,14 @@ x[21:40, 2] = 2
 x[41:60, 1] = 1
 dim(x)
 head(x[,1:5])
-# b
+# b. PCA
 pca.o <- prcomp(x)
 summary(pca.o)
 pca.o$x[,1:2]
 plot(pca.o$x[,1:2], col=c(1,3,5), xlab="Z1", ylab="Z2", pch=19)
 ?plot
 
-# c
+# c. K-Means with K = 3 
 km.out = kmeans(x, 3, nstart=20)
 km.out$cluster <- paste("km",km.out$cluster)
 table(km.out$cluster, c(rep(1,20), rep(2,20), rep(3,20)))
@@ -98,5 +98,22 @@ table(km.out$cluster, c(rep(1,20), rep(2,20), rep(3,20)))
 table(km.out$cluster, c(rep(1,20), rep(2,20), rep(3,20)))
 # Perfect match
 
+# d. K-Means with K = 2
+km.out2 <- kmeans(x, 2, nstart = 20)
+km.out2$cluster <- paste("km2",km.out2$cluster)
+table(km.out2$cluster,c(rep(1,20),rep(2,20),rep(3,20)))
 
+# e. K-Means with K = 4
+km.out4 <- kmeans(x, 4, nstart = 20)
+km.out4$cluster <- paste("km4",km.out4$cluster)
+table(km.out4$cluster, c(rep(1,20),rep(2,20),rep(3,20)))
 
+# f. K-means clustering with K =3 on the first two principal component score vectors
+km.pca <- kmeans(pca.o$x[,1:2],centers = 3,nstart = 20)
+km.pca$cluster <- paste("km.pca",km.pca$cluster)
+table(km.pca$cluster, c(rep(1,20),rep(2,20),rep(3,20)))
+
+# K-Means with scale with K = 3
+km.out = kmeans(scale(x), 3, nstart=20)
+km.out$cluster <- paste("km",km.out$cluster)
+table(km.out$cluster, c(rep(1,20), rep(2,20), rep(3,20)))
