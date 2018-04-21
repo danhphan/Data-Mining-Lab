@@ -64,6 +64,7 @@ dim(mym)
 # 2. Perform PCA
 ?prcomp
 pc.out <- prcomp(mym,scale=TRUE)
+plot(pc.out$x[,1:2],col=c(1,3,5),xlab="Z1",ylab="Z2",pch=12)
 biplot(pc.out,scale=0)
 
 # 3. Perform K-Means
@@ -73,7 +74,7 @@ table(kc$cluster)
 
 
 ###################### FROM LECTURE
-
+# a
 set.seed(2)
 x = matrix(rnorm(20*3*50, mean=0, sd=0.001), ncol=50)
 x[1:20, 2] = 1
@@ -82,3 +83,20 @@ x[21:40, 2] = 2
 x[41:60, 1] = 1
 dim(x)
 head(x[,1:5])
+# b
+pca.o <- prcomp(x)
+summary(pca.o)
+pca.o$x[,1:2]
+plot(pca.o$x[,1:2], col=c(1,3,5), xlab="Z1", ylab="Z2", pch=19)
+?plot
+
+# c
+km.out = kmeans(x, 3, nstart=20)
+km.out$cluster <- paste("km",km.out$cluster)
+table(km.out$cluster, c(rep(1,20), rep(2,20), rep(3,20)))
+
+table(km.out$cluster, c(rep(1,20), rep(2,20), rep(3,20)))
+# Perfect match
+
+
+
