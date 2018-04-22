@@ -118,4 +118,9 @@ km.out = kmeans(scale(x), 3, nstart=20)
 km.out$cluster <- paste("km",km.out$cluster)
 table(km.out$cluster, c(rep(1,20), rep(2,20), rep(3,20)))
 
+# NEXT PART
+# COMBINE PCA WITH LOGISTIC REGRESSION
+
 # FINISH
+
+
