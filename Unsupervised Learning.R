@@ -121,6 +121,10 @@ table(km.out$cluster, c(rep(1,20), rep(2,20), rep(3,20)))
 # NEXT PART
 # COMBINE PCA WITH LOGISTIC REGRESSION
 
+# DO PCA FOR DATA FIRST
+
+# APLY PREDICTION
+
 # FINISH
 
 
