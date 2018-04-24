@@ -50,10 +50,19 @@ dm.lm <- lm(log(price)~log(carat),data=diamonds)
 summary(dm.lm)
 broom::glance(dm.lm)
 
+# Forward elimination
 lm.null <- lm(price ~ 1, data=diamonds)
 summary(lm.null)
 AIC(lm.null)
 BIC(lm.null)
+step(lm.null, scope=list(upper=lm(price~., data=diamonds)), direction = "forward")
+
+# backward elimination
+lm.full <- lm(price~., data=diamonds)
+summary(lm.full)
+AIC(lm.full)
+BIC(lm.full)
+step(lm.full, scope=list(lower=lm.null), direction = "backward")
 
 
 # Perform linear discriminant analysis (LDA) for IRIS data
@@ -86,3 +95,21 @@ sepal.grid
 ggplot(sepal.grid,aes(Sepal.Length,Sepal.Width,fill=Species))+
   geom_tile(alpha=0.2)+
   geom_point(data=iris,aes(col=Species,fill=NA))
+
+
+
+# Define the maximum size of matrices A and B to be multiplied
+max_rows = 200
+
+t <- c()
+for (n in 1:max_rows) {
+  D <- matrix(rnorm(n^2), ncol = n, nrow = n)
+  E <- matrix(rnorm(n^2), ncol = n, nrow = n)
+  t[n] <- time_multiplication(D,E)
+}
+
+run_times <- tibble(n = c(1:max_rows), time = t)
+
+
+ggplot(run_times,aes(n,time)) + geom_point() + geom_smooth()
+
