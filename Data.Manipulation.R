@@ -61,4 +61,11 @@ ggplot(carrierhours,aes(carrier,air_time_hours)) +
   geom_boxplot() +
   geom_violin(col="red")
 
+# Joins
+new.table <- flights %>% left_join(airlines,by=c("carrier","carrier"))
+new.table
 
+# Sampling
+sample_n(flights, 5)
+sample_n(new.table, 10)
+sample_frac(flights,0.009)
