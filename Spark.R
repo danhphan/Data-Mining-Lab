@@ -63,6 +63,7 @@ iris_tbl <- copy_to(sc,iris,"iris",overwrite = TRUE)
 pca_model <- tbl(sc,"iris") %>%
   select(-Species) %>%
   ml_pca()
+
 print(pca_model)
 pca_model
 names(pca_model)
@@ -85,3 +86,23 @@ ggplot(PCs,aes(PC1,PC2)) +
 ## K-means clustering in sparklyr
 #######################################################
 
+
+kmeans_model <- iris_tbl %>%
+  select(Petal_Width, Petal_Length) %>%
+  ml_kmeans(formula= ~ Petal_Width + Petal_Length, centers = 3)
+
+print(kmeans_model)
+
+# predict the associated class
+predicted <- sdf_predict(kmeans_model, iris_tbl) %>%
+  collect
+
+table(predicted$Species, predicted$prediction)
+
+# Plot cluster membership
+sdf_predict(kmeans_model) %>%
+  collect() %>%
+  ggplot(aes(Petal_Length,Petal_Width)) +
+  geom_point(aes(Petal_Width,Petal_Length),col=factor(predicted$prediction + 1), size=2,alpha=0.5) +
+  geom_point(data=kmeans_model$centers,aes(Petal_Width,Petal_Length), pch='x',size=12) +
+  scale_color_discrete(name="Predicted Cluser")
