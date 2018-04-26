@@ -37,3 +37,5 @@ plot.nnet(nn_model,nid=T,var.labs=F)
 ## How accurately can our network model the data?
 
 
+
+
