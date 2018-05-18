@@ -135,7 +135,7 @@ table(usvisas$case_status)
 
 # Add scale columns for employer_num_employees, salary, and weeks_range
 
-
+help("scale")
 
 # DIVIDE into train, evaluation, and test data
 nro <- nrow(usvisas)
