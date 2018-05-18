@@ -129,13 +129,20 @@ dim(usvisas) # 56283    21
 usvisas <- usvisas[,1:21]
 str(usvisas)
 
+
 table(usvisas$case_status)
 # Certified    Denied 
 # 52076      4207
 
-# Add scale columns for employer_num_employees, salary, and weeks_range
-
+### SCALE using min-max nominalisation
+# Add scale columns for employer_num_employees, salary, case_recieved_year, decision_year and weeks_range
 help("scale")
+usvisas$employer_num_employees_scale <- (usvisas$employer_num_employees - min(usvisas$employer_num_employees))/(max(usvisas$employer_num_employees) - min(usvisas$employer_num_employees))
+usvisas$salary_scale <- (usvisas$salary - min(usvisas$salary))/(max(usvisas$salary) - min(usvisas$salary))
+usvisas$case_recieved_year_scale <- (usvisas$case_recieved_year - min(usvisas$case_recieved_year))/(max(usvisas$case_recieved_year) - min(usvisas$case_recieved_year))
+usvisas$decision_year_scale <- (usvisas$decision_year - min(usvisas$decision_year))/(max(usvisas$decision_year) - min(usvisas$decision_year))
+usvisas$weeks_range_scale <- (usvisas$weeks_range - min(usvisas$weeks_range))/(max(usvisas$weeks_range) - min(usvisas$weeks_range))
+
 
 # DIVIDE into train, evaluation, and test data
 nro <- nrow(usvisas)
@@ -143,7 +150,7 @@ set.seed(123)
 nid <- sample(1:nro,size=0.6*nro)
 # Get train data
 train <- usvisas[nid,] 
-dim(train) # 33769    21
+dim(train) # 33769   26
 table(train$case_status)
 # Certified    Denied 
 # 31266      2503
@@ -152,14 +159,14 @@ test <- usvisas[-nid,]
 tid <- sample(1:nrow(test),size=0.5*nrow(test))
 # Get evaluation data
 evaluation <- test[tid,]
-dim(evaluation) # 11257    21
+dim(evaluation) # 11257    26
 table(evaluation$case_status)
 # Certified    Denied 
 # 10393       864
 
 # Get test data
 test <- test[-tid,]
-dim(test) # 11257    21
+dim(test) # 11257    26
 table(test$case_status)
 # Certified    Denied 
 # 10417       840 
@@ -167,9 +174,9 @@ table(test$case_status)
 # Save data for model building and evaluation
 str(train)
 
-write_csv(train,path = "final_usvisas_train.csv")
-write_csv(evaluation,path = "final_usvisas_evaluation.csv")
-write_csv(test,path = "final_usvisas_test.csv")
+write_csv(train,path = "final_usvisas_train_scale.csv")
+write_csv(evaluation,path = "final_usvisas_evaluation_scale.csv")
+write_csv(test,path = "final_usvisas_test_scale.csv")
 
 
 ########################################################
