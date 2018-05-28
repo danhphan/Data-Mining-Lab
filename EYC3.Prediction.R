@@ -21,6 +21,12 @@ str(testX)
 dim(trainX)
 str(trainX)
 
+summary(trainC)
+
+View(trainX)
+
+
+
 # Remove LOCATION
 trainX$LOCATION <- NULL
 testX$LOCATION <- NULL
@@ -28,6 +34,112 @@ dim(trainX)
 dim(testX)
 summary(trainX)
 summary(testX)
+
+pairs(trainX)
+
+set.seed(123)
+rown <- nrow(trainX)
+nid <- sample(1:rown,size=0.75*rown)
+evaluateX <- trainX[-nid,]
+trainX <- trainX[nid,]
+
+
+library(corrplot)
+library(caret)
+
+corMatMy <- cor(trainX) #compute the correlation matrix
+corrplot(corMatMy, order = "hclust")
+corMatMy
+
+highlyCor <- findCorrelation(corMatMy, 0.80)
+highlyCor
+#Apply correlation filter at 0.70,
+#then we remove all the variable correlated with more 0.7.
+trainX <- trainX[,-highlyCor]
+corMatMy2 <- cor(trainX)
+corrplot(corMatMy2, order = "hclust")
+pairs(trainX)
+
+
+corTest <- cor(testX)
+corrplot(corTest)
+
+highCor <- findCorrelation(corTest, 0.8)
+testXXX <- testX[,-highCor]
+
+
+# Do linear regression
+
+#glm.fit=glm(Quality_of_life_measure~., data=trainX)
+trainY <- trainX[,c(names(testXXX),"Quality_of_life_measure")]
+glm.fit=glm(Quality_of_life_measure~., data=trainY)
+
+newdataaa <- cbind(as.data.frame(scale(trainY[,1:19])),Quality_of_life_measure=trainY$Quality_of_life_measure)
+glm.fit.scale =glm(Quality_of_life_measure~., data=newdataaa)
+
+summary(glm.fit)
+
+trainXX <- trainX
+trainXX$Quality_of_life_measure <- NULL
+
+evaluateXX <- evaluateX[,names(trainXX)]
+testXX <- testX[,names(trainXX)]
+
+
+glm.pred <- predict(glm.fit,newdata = evaluateX)
+
+mse <- mean((evaluateX$Quality_of_life_measure - glm.pred)^2)
+mse # 0.005803032 0.006088293
+
+glm.pred2 <- predict(glm.fit,newdata = evaluateXX)
+mse2 <- mean((evaluateX$Quality_of_life_measure - glm.pred2)^2)
+mse2 # 0.005803032 => SAME RESULTS 0.008177823
+
+glm.pred.future <- predict(glm.fit,newdata = testXX)
+glm.pred.future
+
+###############
+glm.pred.future <- predict(glm.fit,newdata = testXXX)
+glm.pred.future
+
+results <- data.frame(id=testC$id,target = glm.pred.future)
+write.csv(results, file = "prediction_linear2.csv",row.names = FALSE)
+
+
+
+
+glm.pred.future2 <- predict(glm.fit,newdata = testXXX)
+glm.pred.future
+
+
+glm.slace <- predict(glm.fit.scale,newdata = as.data.frame(scale(testXXX)))
+
+glm.slace
+results <- data.frame(id=testC$id,target = glm.slace)
+write.csv(results, file = "prediction_linear_scale.csv",row.names = FALSE)
+
+# Test using NN
+library(lattice)
+library(caret)
+# Fit model
+set.seed(123)
+dim(trainX)
+nn_model <- train(Quality_of_life_measure~.,trainX,method="nnet",trace=FALSE)
+
+nn_predict <- predict(nn_model,testXX)
+nn_predict
+
+mean((evaluateX$Quality_of_life_measure - nn_predict)^2)
+# 0.008177823
+
+results <- data.frame(id=testC$id,target = nn_predict)
+
+write.csv(results, file = "prediction_nn5.csv",row.names = FALSE)
+
+
+
+
+
 
 # # Scale data => SHOULD NOT SCALE
 # trainXX <- scale(trainX[,1:38])
@@ -54,17 +166,7 @@ results <- data.frame(id=testC$id,target = rdfr_predict)
 write.csv(results, file = "prediction_rdfr.csv",row.names = FALSE)
 
 
-# Test using NN
-library(lattice)
-library(caret)
-# Fit model
-nn_model <- train(Quality_of_life_measure~.,trainX,method="nnet",trace=FALSE)
 
-nn_predict <- predict(nn_model,testX)
-nn_predict
-results <- data.frame(id=testC$id,target = nn_predict)
-
-write.csv(results, file = "prediction_nn4.csv",row.names = FALSE)
 
 
 ## SVM Model
